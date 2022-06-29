@@ -3,6 +3,9 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField]
+    private Transform bgImage;
+
+    [SerializeField]
     Spawner spawner;
 
     [SerializeField]
@@ -24,15 +27,21 @@ public class CameraController : MonoBehaviour
         cam.transform.position = center;
         cam.orthographicSize = size;
 
-        transform.localScale *= (size / startOtrho);    // Scale Background
+        bgImage.localScale *= (size / startOtrho);    // Scale Background
+    }
+    public Vector3 ConvertToWorldSpace(Vector3 position)
+    {
+        Vector3 newPos = Camera.main.ScreenToWorldPoint(position);
+        newPos.z = 1;
+        return newPos;
     }
     public Vector3 AdaptedScale()
     {
-        if(transform.localScale.x <= 1)
+        if(bgImage.localScale.x <= 1)
         {
-            return Vector3.one - transform.localScale;
+            return Vector3.one - bgImage.localScale;
         }
-        return transform.localScale - Vector3.one;
+        return bgImage.localScale - Vector3.one;
     }
     private (Vector3 center, float size) CalculateOrthoSize()
     {

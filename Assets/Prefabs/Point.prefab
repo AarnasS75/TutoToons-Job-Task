@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7194308837619109765}
   - component: {fileID: 9133181682994824230}
   - component: {fileID: 361131407937997208}
+  - component: {fileID: 6463680179511262238}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -134,6 +135,25 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!95 &6463680179511262238
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3167007090696257768}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6279dfba5b442594d84934b7a914db06, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4460956508734216746
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,6 +267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 116864d7f81204946949fe40d408cc1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  anim: {fileID: 6463680179511262238}
   UItext: {fileID: 361131407937997208}
   pinkSprite: {fileID: 21300000, guid: 42312f24564b4494e97b7ffea29318be, type: 3}
   blueSprite: {fileID: 21300000, guid: c1945109e90036a41a7a8c003b79ccef, type: 3}

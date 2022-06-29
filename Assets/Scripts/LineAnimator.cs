@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,29 +6,83 @@ using UnityEngine;
 public class LineAnimator : MonoBehaviour
 {
     [SerializeField]
+    private Spawner spawner;
+
+    [SerializeField]
     private float animationDuration = 3f;
 
     private LineRenderer lineRenderer;
+
+    private Vector3[] linePoints;
+    private int pointsCount;
 
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
     }
-
-    IEnumerator AnimateLine()
+    private void Start()
     {
-        float startTime = Time.time;
+        lineRenderer.positionCount = spawner.points.Count;
+        pointsCount = lineRenderer.positionCount;
+        linePoints = new Vector3[pointsCount];
 
-        Vector3 startPos = lineRenderer.GetPosition(0);
-        Vector3 endPos = lineRenderer.GetPosition(1);
+        GameObject[] pointsArray = spawner.points.ToArray();
 
-        Vector3 pos = startPos;
-        while (pos != endPos)
+        for (int i = 0; i < pointsCount; i++)
         {
-            float t = (Time.time - startTime) / animationDuration;
-            pos = Vector3.Lerp(startPos, endPos, t);
-            lineRenderer.SetPosition(1, pos);
-            yield return null;
+            linePoints[i] = pointsArray[i].transform.position;
+            
+        }
+        lineRenderer.SetPositions(linePoints);
+    }
+    public IEnumerator AnimateLine()
+    {
+        for (int i = 0; i < pointsCount - 1; i++)
+        {
+            float startTime = Time.time;
+
+            Vector3 startPos = linePoints[i];
+            Vector3 endPos = linePoints[i+1];
+
+            Vector3 pos = startPos;
+            while (pos != endPos)
+            {
+                float t = (Time.time - startTime) / animationDuration;
+                pos = Vector3.Lerp(startPos, endPos, t);
+                for (int j = i+1; j < pointsCount; j++)
+                {
+                    lineRenderer.SetPosition(j, pos);
+                }
+                yield return null;
+            }
         }
     }
+
+    //public Transform lastPoints;
+    //List<Transform> points = new List<Transform>();    
+    //void MakeLine(Transform finalPoint)
+    //{
+    //    if (lastPoints == null)
+    //    {
+    //        lastPoints = finalPoint;
+    //        points.Add(lastPoints);
+    //    }
+    //    else
+    //    {
+    //        points.Add(finalPoint);
+    //        lineRenderer.enabled = true;
+    //        SetupLine();
+    //    }
+    //}
+
+    //private void SetupLine()
+    //{
+    //    int pointLength = points.Count;
+    //    lineRenderer.positionCount = pointLength;
+
+    //    for (int i = 0; i < pointLength; i++)
+    //    {
+    //        lineRenderer.SetPosition(i, points[i].position);
+    //    }
+    //}
 }

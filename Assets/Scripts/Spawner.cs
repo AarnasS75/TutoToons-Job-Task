@@ -48,18 +48,13 @@ public class Spawner : MonoBehaviour
     }
     void SpawnPoint(Vector2 position)
     {
-        var newPos = ConvertToWorldSpace(position);
+        var newPos = cameraController.ConvertToWorldSpace(position);
 
         GameObject point = Instantiate(pointPrefab, newPos, Quaternion.identity, transform);
         
         point.GetComponent<PointScript>().AssignValue(count);
         points.Add(point);
+
         count++;
-    }
-    Vector3 ConvertToWorldSpace(Vector3 position)
-    {
-        Vector3 newPos = Camera.main.ScreenToWorldPoint(position);
-        newPos.z = 1;
-        return newPos;
     }
 }

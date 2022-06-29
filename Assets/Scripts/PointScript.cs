@@ -8,6 +8,9 @@ public class PointScript : MonoBehaviour
     SpriteRenderer renderer;
 
     [SerializeField]
+    Animator anim;
+
+    [SerializeField]
     private TextMeshProUGUI UItext;
 
     public Sprite pinkSprite, blueSprite;
@@ -18,11 +21,15 @@ public class PointScript : MonoBehaviour
     {
         renderer = GetComponent<SpriteRenderer>();
     }
+    private void Start()
+    {
+        anim.enabled = false;
+    }
     public void SelectPoint()
     {
         selected = true;
         renderer.sprite = blueSprite;
-        transform.GetChild(0).gameObject.SetActive(false);
+        anim.enabled = true;
     }
     public void AssignValue(int nr)
     {
