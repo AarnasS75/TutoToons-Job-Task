@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InputHandler : MonoBehaviour
@@ -11,6 +9,10 @@ public class InputHandler : MonoBehaviour
     {
         CheckClickDownEvent();
     }
+    /// <summary>
+    /// Gaunamas taško objektas
+    /// </summary>
+    /// <returns></returns>
     private GameObject RaycastObject()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
@@ -24,13 +26,16 @@ public class InputHandler : MonoBehaviour
             return null;
         }
     }
+    /// <summary>
+    /// Tikrinama ar objektas buvo pasirinktas
+    /// </summary>
     private void CheckClickDownEvent()
     {
         if (Input.GetMouseButtonDown(0))
         {
             var selectedObject = RaycastObject();
-            
-            if(selectedObject != null)
+
+            if (selectedObject != null)
             {
                 OnObjectSelect?.Invoke(selectedObject);
             }
