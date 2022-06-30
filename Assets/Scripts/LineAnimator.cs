@@ -55,7 +55,7 @@ public class LineAnimator : MonoBehaviour
     private IEnumerator SetupLine()
     {
         int pointListLength = points.Count;
-        print($"List size: {pointListLength}");
+
         if (!lineIsDrawing)
         {
             clickedPointIndex++;
@@ -81,16 +81,22 @@ public class LineAnimator : MonoBehaviour
             {
                 if (clickedPointIndex + 1 < pointListLength)
                 {
-                    print($"Clicked point index: {clickedPointIndex} " + $" Point list length: {pointListLength}");
                     clickedPointIndex++;
                     lineRenderer.positionCount++;
                     
                     startPos = newPos;
                     endPos = points[clickedPointIndex].position;
                 }
+                else if (clickedPointIndex + 1 == pointListLength)
+                {
+                    clickedPointIndex++;
+                    lineRenderer.positionCount++;
+
+                    startPos = newPos;
+                    endPos = points[0].position;
+                }
                 else
                 {
-                    //print("Sutampa pabaiga su pradzia");
                     break;
                 }
 

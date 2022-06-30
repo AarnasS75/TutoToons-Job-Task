@@ -16,6 +16,6 @@ public static class SceneLoader
     }
     public static int GetSceneIndex()
     {
-        return 1;
+        return 0;
     }
 }
