@@ -40,42 +40,44 @@ public class LineAnimator : MonoBehaviour
     private void Start()
     {
         totalPointCount = spawner.points.Count;
-        lineRenderer.positionCount = 1; // Iš pradži? užregistruojamas 1 linijos taškas
+        lineRenderer.positionCount = 1; // Sukuriamas pradžios taškas
     }
     /// <summary>
-    /// Pirmas parinktas taškas yra ?terpiamas ? s?raš? ir nuo antro pasirinkto prasideda linijos piešimas
+    /// Pirmas parinktas taškas neturi su kuo susijungti, todėl yra įterpiamas į sąrašą.
+    /// Piešimas prasideda nuo antro pasirinkto taško.
+    /// Kiekvienas pasirinktas taškas yra įterpiamas į sąrašą.
     /// </summary>
-    /// <param name="finalPoint"> Pasirinktas taškas </param>
-    public void MakeLine(Transform finalPoint)
+    /// <param name="selectedPoint"> Pasirinktas taškas </param>
+    public void MakeLine(Transform selectedPoint)
     {
         if (lastPoints == null)
         {
-            lastPoints = finalPoint;
+            lastPoints = selectedPoint;
             points.Add(lastPoints);
         }
         else
         {
-            points.Add(finalPoint);
+            points.Add(selectedPoint);
             lineRenderer.enabled = true;
             StartCoroutine(SetupLine());
         }
     }
     /// <summary>
-    /// Linijos piešimas.
+    /// Linijos konstravimas
     /// </summary>
     /// <returns></returns>
     private IEnumerator SetupLine()
     {
-        int pointListLength = points.Count;    // Tašk?, ant kuri? buvo paspausta, s?rašo ilgis
+        int pointListLength = points.Count;    // Taškų, ant kurių buvo paspausta, sąrašo ilgis
 
-        if (!lineIsDrawing)                    // Jeigu linijos piešimo animacija neprasid?jo 
+        if (!lineIsDrawing)                    // Tikrinama ar linijos piešimo animacija prasidėjo 
         {
-            clickedPointIndex++;              // Užregistruojamas paspaudim? skai?ius, kai virv?s animacija nevyksta
+            clickedPointIndex++;              // Užregistruojamas paspaudimų skaičius, kai virvės animacija nevyksta
             lineRenderer.positionCount++;     // Papildoma antru linijos tašku
 
             startTime = Time.time;            // Registruojamas animacijos pradžios laikas
 
-            startPos = points[clickedPointIndex - 1].position;  // Taško pozicijos priskiriamos iš pasirinkt? tašk? s?rašo
+            startPos = points[clickedPointIndex - 1].position;  // Taško pozicijos priskiriamos iš pasirinktų taškų sąrašo
             endPos = points[clickedPointIndex].position;
 
             lineRenderer.SetPosition(clickedPointIndex - 1, startPos);  // Priskiriama pirmo taško pozicija
