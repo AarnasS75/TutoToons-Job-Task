@@ -13,6 +13,21 @@ public class LineAnimator : MonoBehaviour
 
     private LineRenderer lineRenderer;
 
+    #region Line Drawing Info
+
+    Transform lastPoints;
+
+    List<Transform> points = new List<Transform>();
+
+    int clickedPointIndex = 0;
+
+    Vector3 startPos, endPos;
+
+    bool lineIsDrawing = false;
+
+    float startTime;
+    #endregion
+
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
@@ -21,8 +36,7 @@ public class LineAnimator : MonoBehaviour
     {
         lineRenderer.positionCount = 1;
     }
-    Transform lastPoints;
-    List<Transform> points = new List<Transform>();
+    
     public void MakeLine(Transform finalPoint)
     {
         if (lastPoints == null)
@@ -37,15 +51,11 @@ public class LineAnimator : MonoBehaviour
             StartCoroutine(SetupLine());
         }
     }
-
-    int clickedPointIndex = 0;
-    Vector3 startPos, endPos, pos;
-    bool lineIsDrawing = false;
-    float startTime;
+    
     private IEnumerator SetupLine()
     {
         int pointListLength = points.Count;
-        
+        print($"List size: {pointListLength}");
         if (!lineIsDrawing)
         {
             clickedPointIndex++;
@@ -56,30 +66,36 @@ public class LineAnimator : MonoBehaviour
             startPos = points[clickedPointIndex - 1].position;
             endPos = points[clickedPointIndex].position;
 
-            pos = startPos;
-
-            lineRenderer.SetPosition(clickedPointIndex - 1, pos);
+            lineRenderer.SetPosition(clickedPointIndex - 1, startPos);
         }
-        while (pos != endPos)
+        while (startPos != endPos)
         {
             lineIsDrawing = true;
 
             float t = (Time.time - startTime) / animationDuration;
-            pos = Vector3.Lerp(startPos, endPos, t);
+            var newPos = Vector3.Lerp(startPos, endPos, t);
 
-            lineRenderer.SetPosition(clickedPointIndex, pos);
+            lineRenderer.SetPosition(clickedPointIndex, newPos);
 
-            if (pos == endPos && clickedPointIndex + 1 != pointListLength)
+            if (newPos == endPos)
             {
+                if (clickedPointIndex + 1 < pointListLength)
+                {
+                    print($"Clicked point index: {clickedPointIndex} " + $" Point list length: {pointListLength}");
+                    clickedPointIndex++;
+                    lineRenderer.positionCount++;
+                    
+                    startPos = newPos;
+                    endPos = points[clickedPointIndex].position;
+                }
+                else
+                {
+                    //print("Sutampa pabaiga su pradzia");
+                    break;
+                }
+
                 startTime = Time.time;
-
-                lineRenderer.positionCount++;
-
-                clickedPointIndex++;
-
-                endPos = points[clickedPointIndex].position;
-
-               lineRenderer.SetPosition(clickedPointIndex, pos);
+                
             }
 
             yield return null;
