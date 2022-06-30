@@ -13,76 +13,77 @@ public class LineAnimator : MonoBehaviour
 
     private LineRenderer lineRenderer;
 
-    private Vector3[] linePoints;
-    private int pointsCount;
-
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
     }
     private void Start()
     {
-        lineRenderer.positionCount = spawner.points.Count;
-        pointsCount = lineRenderer.positionCount;
-        linePoints = new Vector3[pointsCount];
-
-        GameObject[] pointsArray = spawner.points.ToArray();
-
-        for (int i = 0; i < pointsCount; i++)
-        {
-            linePoints[i] = pointsArray[i].transform.position;
-            
-        }
-        lineRenderer.SetPositions(linePoints);
+        lineRenderer.positionCount = 1;
     }
-    public IEnumerator AnimateLine()
+    Transform lastPoints;
+    List<Transform> points = new List<Transform>();
+    public void MakeLine(Transform finalPoint)
     {
-        for (int i = 0; i < pointsCount - 1; i++)
+        if (lastPoints == null)
         {
-            float startTime = Time.time;
-
-            Vector3 startPos = linePoints[i];
-            Vector3 endPos = linePoints[i+1];
-
-            Vector3 pos = startPos;
-            while (pos != endPos)
-            {
-                float t = (Time.time - startTime) / animationDuration;
-                pos = Vector3.Lerp(startPos, endPos, t);
-                for (int j = i+1; j < pointsCount; j++)
-                {
-                    lineRenderer.SetPosition(j, pos);
-                }
-                yield return null;
-            }
+            lastPoints = finalPoint;
+            points.Add(lastPoints);
+        }
+        else
+        {
+            points.Add(finalPoint);
+            lineRenderer.enabled = true;
+            StartCoroutine(SetupLine());
         }
     }
 
-    //public Transform lastPoints;
-    //List<Transform> points = new List<Transform>();    
-    //void MakeLine(Transform finalPoint)
-    //{
-    //    if (lastPoints == null)
-    //    {
-    //        lastPoints = finalPoint;
-    //        points.Add(lastPoints);
-    //    }
-    //    else
-    //    {
-    //        points.Add(finalPoint);
-    //        lineRenderer.enabled = true;
-    //        SetupLine();
-    //    }
-    //}
+    int clickedPointIndex = 0;
+    Vector3 startPos, endPos, pos;
+    bool lineIsDrawing = false;
+    float startTime;
+    private IEnumerator SetupLine()
+    {
+        int pointListLength = points.Count;
+        
+        if (!lineIsDrawing)
+        {
+            clickedPointIndex++;
+            lineRenderer.positionCount++;
 
-    //private void SetupLine()
-    //{
-    //    int pointLength = points.Count;
-    //    lineRenderer.positionCount = pointLength;
+            startTime = Time.time;
 
-    //    for (int i = 0; i < pointLength; i++)
-    //    {
-    //        lineRenderer.SetPosition(i, points[i].position);
-    //    }
-    //}
+            startPos = points[clickedPointIndex - 1].position;
+            endPos = points[clickedPointIndex].position;
+
+            pos = startPos;
+
+            lineRenderer.SetPosition(clickedPointIndex - 1, pos);
+        }
+        while (pos != endPos)
+        {
+            lineIsDrawing = true;
+
+            float t = (Time.time - startTime) / animationDuration;
+            pos = Vector3.Lerp(startPos, endPos, t);
+
+            lineRenderer.SetPosition(clickedPointIndex, pos);
+
+            if (pos == endPos && clickedPointIndex + 1 != pointListLength)
+            {
+                startTime = Time.time;
+
+                lineRenderer.positionCount++;
+
+                clickedPointIndex++;
+
+                endPos = points[clickedPointIndex].position;
+
+               lineRenderer.SetPosition(clickedPointIndex, pos);
+            }
+
+            yield return null;
+        }
+        lineIsDrawing = false;
+    }
 }

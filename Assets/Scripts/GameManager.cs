@@ -23,8 +23,8 @@ public class GameManager : MonoBehaviour
         {
             selectedPoint.GetComponent<PointScript>().SelectPoint();
             spawner.points.Remove(selectedPoint);
-            lineAnimator.GetComponent<LineRenderer>().enabled = true;
-            StartCoroutine(lineAnimator.AnimateLine());
+            //lineAnimator.GetComponent<LineRenderer>().enabled = true;
+            lineAnimator.MakeLine(selectedPoint.transform);
         }
     }
 }
