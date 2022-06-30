@@ -7,6 +7,9 @@ using TMPro;
 public class Spawner : MonoBehaviour
 {
     [SerializeField]
+    private SceneLoader sceneLoader;
+
+    [SerializeField]
     private GameObject pointPrefab;
 
     [SerializeField]
@@ -17,9 +20,12 @@ public class Spawner : MonoBehaviour
 
     private int count = 1;
 
-    [HideInInspector]
+    
     public List<GameObject> points = new List<GameObject>();
-
+    private void Awake()
+    {
+        
+    }
     private void Start()
     {
         SpawnPoints();
@@ -37,7 +43,7 @@ public class Spawner : MonoBehaviour
     {
         foreach (var item in jsonReader.levelList.levels)
         {
-            if (SceneLoader.GetSceneIndex() == Array.IndexOf(jsonReader.levelList.levels, item))
+            if (sceneLoader.GetSceneIndex() == Array.IndexOf(jsonReader.levelList.levels, item))      // Tašk? pozicijos iš JSON failo paimamos eil?s tvarka, pagal lygio indeksa
             {
                 for (int i = 0; i < item.level_data.Length; i += 2)
                 {

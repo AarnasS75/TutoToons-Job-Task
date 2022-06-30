@@ -3,19 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public static class SceneLoader
+public class SceneLoader: MonoBehaviour
 {
-    public enum Scene
+    public void Load(int levelNumber)
     {
-        GameScene,
-        MainMenu
+        SceneManager.LoadScene(levelNumber);
     }
-    public static void Load(Scene scene)
+    public int GetSceneIndex()
     {
-        SceneManager.LoadScene(scene.ToString());
-    }
-    public static int GetSceneIndex()
-    {
-        return 0;
+        return SceneManager.GetActiveScene().buildIndex - 1;
     }
 }

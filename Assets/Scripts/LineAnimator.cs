@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class LineAnimator : MonoBehaviour
 {
@@ -13,20 +14,24 @@ public class LineAnimator : MonoBehaviour
 
     private LineRenderer lineRenderer;
 
-    #region Line Drawing Info
 
-    Transform lastPoints;
+    #region Linijos piešimo kintamieji
 
-    List<Transform> points = new List<Transform>();
+    private Transform lastPoints;
 
-    int clickedPointIndex = 0;
+    private int totalPointCount;
 
-    Vector3 startPos, endPos;
+    private List<Transform> points = new List<Transform>();
 
-    bool lineIsDrawing = false;
+    private int clickedPointIndex = 0;
 
-    float startTime;
+    private Vector3 startPos, endPos;
+
+    private bool lineIsDrawing = false;
+
+    private float startTime;
     #endregion
+
 
     private void Awake()
     {
@@ -34,9 +39,13 @@ public class LineAnimator : MonoBehaviour
     }
     private void Start()
     {
-        lineRenderer.positionCount = 1;
+        totalPointCount = spawner.points.Count;
+        lineRenderer.positionCount = 1; // Iš pradži? užregistruojamas 1 linijos taškas
     }
-    
+    /// <summary>
+    /// Pirmas parinktas taškas yra ?terpiamas ? s?raš? ir nuo antro pasirinkto prasideda linijos piešimas
+    /// </summary>
+    /// <param name="finalPoint"> Pasirinktas taškas </param>
     public void MakeLine(Transform finalPoint)
     {
         if (lastPoints == null)
@@ -51,61 +60,68 @@ public class LineAnimator : MonoBehaviour
             StartCoroutine(SetupLine());
         }
     }
-    
+    /// <summary>
+    /// Linijos piešimas.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator SetupLine()
     {
-        int pointListLength = points.Count;
+        int pointListLength = points.Count;    // Tašk?, ant kuri? buvo paspausta, s?rašo ilgis
 
-        if (!lineIsDrawing)
+        if (!lineIsDrawing)                    // Jeigu linijos piešimo animacija neprasid?jo 
         {
-            clickedPointIndex++;
-            lineRenderer.positionCount++;
+            clickedPointIndex++;              // Užregistruojamas paspaudim? skai?ius, kai virv?s animacija nevyksta
+            lineRenderer.positionCount++;     // Papildoma antru linijos tašku
 
-            startTime = Time.time;
+            startTime = Time.time;            // Registruojamas animacijos pradžios laikas
 
-            startPos = points[clickedPointIndex - 1].position;
+            startPos = points[clickedPointIndex - 1].position;  // Taško pozicijos priskiriamos iš pasirinkt? tašk? s?rašo
             endPos = points[clickedPointIndex].position;
 
-            lineRenderer.SetPosition(clickedPointIndex - 1, startPos);
+            lineRenderer.SetPosition(clickedPointIndex - 1, startPos);  // Priskiriama pirmo taško pozicija
         }
-        while (startPos != endPos)
+        while (startPos != endPos)      
         {
             lineIsDrawing = true;
 
             float t = (Time.time - startTime) / animationDuration;
-            var newPos = Vector3.Lerp(startPos, endPos, t);
+            var newPos = Vector3.Lerp(startPos, endPos, t);             // Sukuriama antro taško animacija iki pabaigos pozicijos
 
             lineRenderer.SetPosition(clickedPointIndex, newPos);
 
-            if (newPos == endPos)
+            if (newPos == endPos)                                      
             {
-                if (clickedPointIndex + 1 < pointListLength)
+                if (lineRenderer.positionCount + 1 <= pointListLength)      // Tikrinama, ar pridėjus papildomą linijos tašką, bendra taškų suma neviršys pasirinktų taškų sąrašo ilgio
                 {
                     clickedPointIndex++;
                     lineRenderer.positionCount++;
-                    
+
                     startPos = newPos;
                     endPos = points[clickedPointIndex].position;
                 }
-                else if (clickedPointIndex + 1 == pointListLength)
-                {
-                    clickedPointIndex++;
-                    lineRenderer.positionCount++;
-
-                    startPos = newPos;
-                    endPos = points[0].position;
-                }
                 else
                 {
-                    break;
-                }
+                    if (pointListLength == totalPointCount && lineRenderer.positionCount == totalPointCount)  // Tikrinama, ar pasirinktų taškų sąrašo ilgis sutampa su visų sukurtų taškų kiekiu bei linijos taškų skaičiumi
+                    {
+                        clickedPointIndex++;
+                        lineRenderer.positionCount++;
 
-                startTime = Time.time;
+                        startPos = newPos;
+                        endPos = points[0].position;        // Pabaigos taškui priskiriama pirmo pasirinkto elemnto pozicija
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+
+                }
+                startTime = Time.time;                              // Iš naujo nustatomas animacijos pradžios laikas
                 
             }
 
             yield return null;
         }
-        lineIsDrawing = false;
+        lineIsDrawing = false;                                       
     }
 }
