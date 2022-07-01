@@ -29,12 +29,20 @@ public class CameraController : MonoBehaviour
 
         bgImage.localScale *= (size / startOtrho);    // Scale Background
     }
+    /// <summary>
+    /// JSON failo koordina?i? konvertavimas ? vietin? koordina?i? sistem?
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public Vector3 ConvertToWorldSpace(Vector3 position)
     {
         Vector3 newPos = Camera.main.ScreenToWorldPoint(position);
         newPos.z = 1;
         return newPos;
     }
+    /// <summary>
+    /// M?stelis skai?iuojamas pagal fono paveiksliuko dyd?
+    /// </summary>
     public Vector3 AdaptedScale()
     {
         if(bgImage.localScale.x <= 1)
@@ -43,6 +51,10 @@ public class CameraController : MonoBehaviour
         }
         return bgImage.localScale - Vector3.one;
     }
+    /// <summary>
+    /// Kameros m?stelio skai?iavimas
+    /// Apgaubiami sukurti taškai ir pagal šios ribos ilg? ir plot? yra pritaikoma kamera
+    /// </summary>
     private (Vector3 center, float size) CalculateOrthoSize()
     {
         var bounds = new Bounds();
