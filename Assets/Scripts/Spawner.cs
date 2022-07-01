@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using TMPro;
 
 public class Spawner : MonoBehaviour
 {
@@ -20,12 +18,9 @@ public class Spawner : MonoBehaviour
 
     private int count = 1;
 
-    
+    [HideInInspector]
     public List<GameObject> points = new List<GameObject>();
-    private void Awake()
-    {
-        
-    }
+  
     private void Start()
     {
         SpawnPoints();
