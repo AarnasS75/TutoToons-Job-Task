@@ -343,6 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a5cc788dedfd644e80607815a5b204f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneLoader: {fileID: 1827240636}
   inputManager: {fileID: 595888349}
   spawner: {fileID: 257459873}
   lineAnimator: {fileID: 1052700930}
@@ -372,7 +373,7 @@ GameObject:
   - component: {fileID: 1052700930}
   - component: {fileID: 1052700931}
   m_Layer: 0
-  m_Name: Line Renderer
+  m_Name: Rope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
