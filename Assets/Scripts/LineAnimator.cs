@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class LineAnimator : MonoBehaviour
 {
+    CameraController camController;
+
     [SerializeField]
     private Spawner spawner;
 
@@ -28,6 +30,7 @@ public class LineAnimator : MonoBehaviour
     private Vector3 startPos, endPos;
 
     private bool lineIsDrawing = false;
+    private bool drawingIsCompleted = false;
 
     private float startTime;
     #endregion
@@ -35,10 +38,18 @@ public class LineAnimator : MonoBehaviour
 
     private void Awake()
     {
+        camController = Camera.main.GetComponent<CameraController>();
         lineRenderer = GetComponent<LineRenderer>();
     }
     private void Start()
     {
+        AnimationCurve curve = new AnimationCurve();
+        Vector2 curveWidth = camController.AdaptedScale();
+
+        curve.AddKey(curveWidth.x, curveWidth.y);
+
+        lineRenderer.widthCurve = curve;
+
         totalPointCount = spawner.points.Count;
         lineRenderer.positionCount = 1; // Sukuriamas pradžios taškas
     }
@@ -82,7 +93,8 @@ public class LineAnimator : MonoBehaviour
 
             lineRenderer.SetPosition(clickedPointIndex - 1, startPos);  // Priskiriama pirmo taško pozicija
         }
-        while (startPos != endPos)      
+
+        while (startPos != endPos && !drawingIsCompleted)      
         {
             lineIsDrawing = true;
 
@@ -113,10 +125,14 @@ public class LineAnimator : MonoBehaviour
                     }
                     else
                     {
+                        if (newPos == points[0].position)
+                        {
+                            drawingIsCompleted = true;
+                            GameManager.Instance.EndLevel();
+                        }
+
                         break;
                     }
-
-
                 }
                 startTime = Time.time;                              // Iš naujo nustatomas animacijos pradžios laikas
                 
@@ -124,6 +140,7 @@ public class LineAnimator : MonoBehaviour
 
             yield return null;
         }
+        
         lineIsDrawing = false;                                       
     }
 }
