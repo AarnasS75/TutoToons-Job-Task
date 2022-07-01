@@ -31,8 +31,9 @@ public class Spawner : MonoBehaviour
     {
         foreach (var point in points)
         {
-            point.transform.localScale = cameraController.AdaptedScale();
+            point.transform.localScale *= cameraController.PercentageIncreaseScale();
         }
+        transform.position = new Vector2(transform.position.x + 1.5f, transform.position.y);
     }
     void SpawnPoints()
     {

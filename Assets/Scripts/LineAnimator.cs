@@ -44,7 +44,9 @@ public class LineAnimator : MonoBehaviour
     private void Start()
     {
         AnimationCurve curve = new AnimationCurve();
-        Vector2 curveWidth = camController.AdaptedScale();
+        Vector2 curveWidth = Vector2.one;
+
+        curveWidth *= camController.PercentageIncreaseScale() / 1.4f;
 
         curve.AddKey(curveWidth.x, curveWidth.y);
 

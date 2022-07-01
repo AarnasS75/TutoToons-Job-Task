@@ -43,13 +43,11 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// M?stelis skai?iuojamas pagal fono paveiksliuko dyd?
     /// </summary>
-    public Vector3 AdaptedScale()
+    /// 
+    
+    public float PercentageIncreaseScale()
     {
-        if(bgImage.localScale.x <= 1)
-        {
-            return Vector3.one - bgImage.localScale;
-        }
-        return bgImage.localScale - Vector3.one;
+        return bgImage.localScale.x / 2f;
     }
     /// <summary>
     /// Kameros m?stelio skai?iavimas
