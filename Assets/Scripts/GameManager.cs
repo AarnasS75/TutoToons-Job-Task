@@ -4,6 +4,22 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    [SerializeField]
+    private SceneLoader sceneLoader;
+
     [SerializeField]
     private InputHandler inputManager;
 
@@ -25,5 +41,11 @@ public class GameManager : MonoBehaviour
             spawner.points.Remove(selectedPoint);
             lineAnimator.MakeLine(selectedPoint.transform);
         }
+    }
+    public void EndLevel()
+    {
+        PlayerPrefs.SetInt("levelReached", sceneLoader.GetSceneIndex() + 2);
+        sceneLoader.Load(0);
+
     }
 }
